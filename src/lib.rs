@@ -1,5 +1,5 @@
 pub mod pixels;
-pub use pixels::Pixel;
+use pixels::Rgb;
 
 pub struct Video<P> {
     frames: Vec<Frame<P>>,
@@ -12,6 +12,6 @@ pub struct Frame<P> {
     resolution: (usize, usize),
 }
 
-impl<P: Pixel> Video<P> {}
+impl<P: Into<Rgb>> Video<P> {}
 
-impl<P: Pixel> Frame<P> {}
+impl<P: Into<Rgb>> Frame<P> {}
