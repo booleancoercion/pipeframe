@@ -1,12 +1,13 @@
 //! Basic kinds of pixels, offering variation in the choice of frames.  
 //! HSL and HSV algorithms adapted from [Wikipedia](https://en.wikipedia.org/wiki/HSL_and_HSV).
 //!
-//! Every type of pixel must satisfy the trait bound `Into<Rgb>`, where `Rgb` is the struct in this module.
+//! Every type of pixel must satisfy the trait bound `&P: Into<Rgb>`, where `Rgb` is the struct in this module,
+//! and must also have a `Default` impl.
 
 /// A simple RGB pixel.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
 pub struct Rgb {
-    vals: [u8; 3],
+    pub(crate) vals: [u8; 3],
 }
 
 impl Rgb {
@@ -25,8 +26,14 @@ impl Rgb {
     }
 }
 
+impl From<&Rgb> for Rgb {
+    fn from(other: &Rgb) -> Self {
+        *other
+    }
+}
+
 /// An HSL (Hue, Saturation, Lightness) pixel.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hsl {
     vals: [f64; 3],
 }
@@ -61,7 +68,7 @@ impl Hsl {
 }
 
 /// An HSV (Hue, Saturation, Value/Brightness) pixel.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hsv {
     vals: [f64; 3],
 }
@@ -91,9 +98,9 @@ impl Hsv {
     }
 }
 
-impl From<Hsl> for Rgb {
+impl From<&Hsl> for Rgb {
     #[allow(clippy::many_single_char_names)]
-    fn from(other: Hsl) -> Self {
+    fn from(other: &Hsl) -> Self {
         let h = other.vals[0] * 360.;
         let s = other.vals[1];
         let l = other.vals[2];
@@ -113,9 +120,9 @@ impl From<Hsl> for Rgb {
     }
 }
 
-impl From<Hsv> for Rgb {
+impl From<&Hsv> for Rgb {
     #[allow(clippy::many_single_char_names)]
-    fn from(other: Hsv) -> Self {
+    fn from(other: &Hsv) -> Self {
         let h = other.vals[0] * 360.;
         let s = other.vals[1];
         let v = other.vals[2];
