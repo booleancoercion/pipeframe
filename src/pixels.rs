@@ -7,19 +7,19 @@
 /// A simple RGB pixel.
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
 pub struct Rgb {
-    pub(crate) vals: [u8; 3],
+    pub vals: [u8; 3],
 }
 
 impl Rgb {
     /// Construct a new RGB pixel from a triplet of bytes.
-    pub fn bytes(bytes: [u8; 3]) -> Self {
+    pub fn from_bytes(bytes: [u8; 3]) -> Self {
         Self { vals: bytes }
     }
 
     /// Construct a new RGB pixel from a triplet of floats;
     /// each float value should be between 0.0 and 1.0 (where 0.0 -> 0, 1.0 -> 255).  
     /// The inputs are clamped in order to satisfy this.
-    pub fn floats(floats: [f64; 3]) -> Self {
+    pub fn from_floats(floats: [f64; 3]) -> Self {
         let vals = [to_u8(floats[0]), to_u8(floats[1]), to_u8(floats[2])];
 
         Self { vals }
@@ -35,7 +35,7 @@ impl From<&Rgb> for Rgb {
 /// An HSL (Hue, Saturation, Lightness) pixel.
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hsl {
-    vals: [f64; 3],
+    pub vals: [f64; 3],
 }
 
 impl Hsl {
@@ -46,7 +46,7 @@ impl Hsl {
     /// 0 <= S <= 100  
     /// 0 <= L <= 100  
     /// In that order; that is, H = ints[0] and so on. The inputs are clamped to fit in this range.
-    pub fn ints(ints: [u16; 3]) -> Self {
+    pub fn from_ints(ints: [u16; 3]) -> Self {
         let h = ints[0].clamp(0, 360) as f64;
         let s = ints[1].clamp(0, 100) as f64;
         let l = ints[2].clamp(0, 100) as f64;
@@ -58,19 +58,23 @@ impl Hsl {
 
     /// Construct a new HSL pixel from a triplet of floats.
     /// The floats should all be between 0.0 and 1.0, and will be clamped into that range.
-    pub fn floats(floats: [f64; 3]) -> Self {
+    pub fn from_floats(floats: [f64; 3]) -> Self {
         let h = floats[0].clamp(0.0, 1.0);
         let s = floats[1].clamp(0.0, 1.0);
         let l = floats[2].clamp(0.0, 1.0);
 
         Self { vals: [h, s, l] }
     }
+
+    pub fn get_floats(&self) -> [f64; 3] {
+        self.vals
+    }
 }
 
 /// An HSV (Hue, Saturation, Value/Brightness) pixel.
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Hsv {
-    vals: [f64; 3],
+    pub vals: [f64; 3],
 }
 
 impl Hsv {
@@ -81,20 +85,24 @@ impl Hsv {
     /// 0 <= S <= 100  
     /// 0 <= V <= 100  
     /// In that order; that is, H = ints[0] and so on. The inputs are clamped to fit in this range.
-    pub fn ints(ints: [u16; 3]) -> Self {
+    pub fn from_ints(ints: [u16; 3]) -> Self {
         // same impl
         Self {
-            vals: Hsl::ints(ints).vals,
+            vals: Hsl::from_ints(ints).vals,
         }
     }
 
     /// Construct a new HSV pixel from a triplet of floats.
     /// The floats should all be between 0.0 and 1.0, and will be clamped into that range.
-    pub fn floats(floats: [f64; 3]) -> Self {
+    pub fn from_floats(floats: [f64; 3]) -> Self {
         // same impl
         Self {
-            vals: Hsl::floats(floats).vals,
+            vals: Hsl::from_floats(floats).vals,
         }
+    }
+
+    pub fn get_floats(&self) -> [f64; 3] {
+        self.vals
     }
 }
 

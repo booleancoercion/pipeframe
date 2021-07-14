@@ -21,9 +21,8 @@ pub struct Frame<P> {
     resolution: (usize, usize),
 }
 
-impl<P> Video<P>
+impl<P: Default> Video<P>
 where
-    P: Default,
     for<'a> &'a P: Into<Rgb>,
 {
     /// Creates a new empty video with the given resolution and FPS.
